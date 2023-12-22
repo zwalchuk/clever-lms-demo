@@ -1,7 +1,7 @@
 import { CleverDataFetcher } from '@/app/lib/clever';
 
 export default async function Home() {
-  const fetcher = new CleverDataFetcher("YOUR_TOKEN_GOES_HERE");
+  const fetcher = new CleverDataFetcher("TEST_TOKEN");
 
   const userData = await fetcher.fetchStudents();
   const sectionData = await fetcher.fetchSections();
