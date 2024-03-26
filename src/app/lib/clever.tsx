@@ -1,4 +1,4 @@
-import { Student, Section } from '@/app/lib/definitions';
+import { Student, Section, Assignment, Submission } from '@/app/lib/definitions';
 
 export class CleverDataFetcher {
   token: string;
@@ -23,17 +23,17 @@ export class CleverDataFetcher {
     return data;
   }
   async fetchStudents() {
-    const students = await this.fetch('https://api.clever.com/v3.0/users?role=student');
+    const students = await this.fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8b/myStudents');
     return students.data.map((data) => new Student(data.data));
   }
 
   async fetchSections() {
-    const section = await this.fetch('https://api.clever.com/v3.0/sections');
+    const section = await this.fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8b/sections');
     return section.data.map((data) => new Section(data.data));
   }
 
   async createAssignment() {
-    // TODO: Implement this
+
   }
 
   async getAssignment() {
