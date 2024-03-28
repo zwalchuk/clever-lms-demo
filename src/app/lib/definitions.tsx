@@ -1,3 +1,5 @@
+import { UUID } from "crypto";
+
 // This file contains type definitions for Clever-related data.
 export class Student {
   id: string;
@@ -62,8 +64,21 @@ export class Section {
 
 export type Assignment = {
   id: string;
+  title: string;
+  description: string;
+  state: string;
+  assignee_ids: string;
+  due_date: Date;
+  points_possible: Number;
+  grading_type: string;
+  submission_types: string[];
 }
 
 export type Submission = {
   id: string;
+  assignment_id: string;
+  state: string;
+  attachments: string[];
+  grader_id: string;
+  user_id: string;
 }
