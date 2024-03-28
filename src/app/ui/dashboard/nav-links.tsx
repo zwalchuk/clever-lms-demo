@@ -21,7 +21,7 @@ const links = [
     icon: DocumentDuplicateIcon,
   },
   { name: 'My Students', 
-    href: '/dashboard/my-students', 
+    href: '/dashboard/students',
     icon: UserGroupIcon },
 ];
 

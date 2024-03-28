@@ -35,13 +35,14 @@ export class CleverDataFetcher {
     return section.data.map((data) => new Section(data.data));
   }
 
-  async fetchStudentsInSections() {
+  async fetchStudentsInSection() {
     noStore();
-    const sectionData = Section(data.data)
+    const sectionData = await this.fetchSections();
     const studentsInSection = await this.fetch(`https://api.clever.com/v3.0/sections/${sectionData.id}/students`);
-    return studentsInSection.data.map((data) => Student(data.data));
+    return studentsInSection.data.map((data) => new Student(data.data));
   }
 }
+
 
 /* export class CleverPost {
   token: string;

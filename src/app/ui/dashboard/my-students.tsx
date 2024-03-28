@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { inter } from '@/app/ui/fonts';
 import { CleverDataFetcher } from '@/app/lib/clever';
 
-export default async function fetchSectionData() {
+export default async function fetchStudentData() {
     const fetcher = new CleverDataFetcher(process.env.DAC_TOKEN)
-    const sectionData = await fetcher.fetchSections();
+    const studentData = await fetcher.fetchStudents();
     return (
         <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${inter.className} mb-4 text-xl md:text-2xl`}>
@@ -14,10 +14,10 @@ export default async function fetchSectionData() {
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
         {<div className="bg-white px-6">
-          {sectionData.map((section, i) => {
+          {studentData.map((student, i) => {
             return (
               <div
-                key={section.id}
+                key={student.id}
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
@@ -28,12 +28,12 @@ export default async function fetchSectionData() {
                 <div className="flex items-center">
                   <div className="min-w-0">
                     <Link 
-                    href={`/dashboard/sections/${section.id}/students`}
+                    href={`/dashboard/sections/${student.id}`}
                     className="truncate text-lg text-gray-700 font-semibold sm:block">
-                      {section.name}
+                      {student.name}
                     </Link>
                     <p className="text-sm text-gray-400 font-normal md:text-base">
-                      {section.sis_id}
+                      {student.sis_id}
                     </p>
                   </div>
                 </div>
