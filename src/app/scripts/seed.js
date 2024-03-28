@@ -17,7 +17,7 @@ async function seedAssignments(client) {
             assignments.map(async (assignment) => {
                 return client.sql`
                 INSERT INTO assignments (id, section_id)
-                VALUES (${assignment.id}, ${assignments.section_id})
+                VALUES (${assignment.id}, ${assignment.section_id})
                 ON CONFLICT (id) DO NOTHING;
             `;
             }),
