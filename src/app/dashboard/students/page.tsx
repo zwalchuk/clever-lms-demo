@@ -1,13 +1,11 @@
 import { CleverDataFetcher } from "@/app/lib/clever";
 import { inter } from '@/app/ui/fonts';
 import MyStudents from '@/app/ui/dashboard/my-students';
-//import CardWrapper from '@/app/ui/dashboard/cards';
-//import Card from '@/app/ui/dashboard/cards';
 import { Suspense } from 'react';
-import { CardsSkeleton, MyStudentsSkeleton } from '@/app/ui/skeletons';
+import { MyStudentsSkeleton } from '@/app/ui/skeletons';
 
 export default async function getStudents(){
-  const fetcher = new CleverDataFetcher(process.env.DAC_TOKEN)
+  const fetcher = new CleverDataFetcher(process.env.DAC_TOKEN);
   const studentData = await fetcher.fetchStudents();
 
     return(

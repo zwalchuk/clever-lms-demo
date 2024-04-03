@@ -1,13 +1,13 @@
 const { db } = require('@vercel/postgres');
-const { assignments } = require('@/app/lib/placeholder-data.js');
+const { assignments } = require('../src/app/lib/demo-data.js');
 
 async function seedAssignments(client) {
     try {
         await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
         const createTable = await client.sql`
             CREATE TABLE IF NOT EXISTS assignments (
-                id UUID,
-                section_id,
+                id text,
+                section_id text
             );
         `;
 
@@ -18,7 +18,6 @@ async function seedAssignments(client) {
                 return client.sql`
                 INSERT INTO assignments (id, section_id)
                 VALUES (${assignment.id}, ${assignment.section_id})
-                ON CONFLICT (id) DO NOTHING;
             `;
             }),
         );
