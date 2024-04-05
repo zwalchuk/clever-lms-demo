@@ -1,3 +1,5 @@
+// sections table on /dashboard
+
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -5,8 +7,9 @@ import { inter } from '@/app/ui/fonts';
 import { CleverDataFetcher } from '@/app/lib/clever';
 
 export default async function fetchSectionData() {
-    const fetcher = new CleverDataFetcher(process.env.DAC_TOKEN)
+    const fetcher = new CleverDataFetcher()
     const sectionData = await fetcher.fetchSections();
+
     return (
         <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${inter.className} mb-4 text-xl md:text-2xl`}>
@@ -28,12 +31,12 @@ export default async function fetchSectionData() {
                 <div className="flex items-center">
                   <div className="min-w-0">
                     <Link 
-                    href={`/dashboard/sections/${section.id}/students`}
+                    href={`/dashboard/sections/${section.id}/assignments`}
                     className="truncate text-lg text-gray-700 font-semibold sm:block">
                       {section.name}
                     </Link>
                     <p className="text-sm text-gray-400 font-normal md:text-base">
-                      {section.sis_id}
+                      {section.id}
                     </p>
                   </div>
                 </div>

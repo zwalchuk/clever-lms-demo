@@ -166,19 +166,22 @@ export function AssignmentsTableSkeleton() {
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  Section Name
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Title
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  Assignee Mode
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date
+                  Points Possible
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Status
+                  Due Date
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Submission Types
                 </th>
                 <th
                   scope="col"

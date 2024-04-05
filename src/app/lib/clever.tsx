@@ -1,20 +1,17 @@
-import { Student, Section, Assignment, Submission } from '@/app/lib/definitions';
+// Clever API calls
+
+import { Student, Section, Assignment, Submission, SectionField } from '@/app/lib/definitions';
 import { unstable_noStore as noStore } from 'next/cache';
-import { usePathname } from 'next/navigation';
 import { sql } from '@vercel/postgres';
 
+const token = process.env.DAC_TOKEN
 
 export class CleverDataFetcher {
-  token: string;
-
-  constructor(token) {
-    this.token = token;
-  }
 
   async fetch(url: string) {
     const res = await fetch(url, {
       headers: {
-          'Authorization': 'Bearer ' + this.token,
+          'Authorization': 'Bearer ' + token,
           'Content-Type': 'application/json'
       },
     });
@@ -37,21 +34,31 @@ export class CleverDataFetcher {
     return section.data.map((data) => new Section(data.data));
   }
 
-  async fetchStudentsInSection() {
-    noStore();
-    const sectionData = await this.fetchSections();
-    const studentsInSection = await this.fetch(`https://api.clever.com/v3.0/sections/${sectionData.id}/students`);
-    return studentsInSection.data.map((data) => new Student(data.data));
-  }
-
-   /*async fetchAssignments() {
+   async getAssignment() {
     noStore();
     const assignmentData = await this.fetch(`https://api.clever.com/v3.1/sections/657b35c16a1a3e5c217dcd67/assignments/2c257413-3bb4-428a-b215-98a303f91b4c`)
     return assignmentData.data.map((data) => new Assignment(data.data));
-  }*/
+  }
 }
 
-export default async function fetchAssignments() {
+export async function fetchSections() {
+  const res = await fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8b/sections', {
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const data = await res.json();
+
+  if (res.status !== 200) {
+    throw new Error(data.message);
+  }
+
+  return data
+}
+
+export async function fetchAssignments() {
   noStore();
   try {
     const data = await sql<Assignment>`
@@ -64,12 +71,13 @@ export default async function fetchAssignments() {
     return assignments;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch assignments for section.');
+    throw new Error('Failed to fetch assignments.');
   }
 
 }
 
 const ITEMS_PER_PAGE = 6;
+
 export async function fetchAssignmentsPages(query: string) {
   noStore();
   try {

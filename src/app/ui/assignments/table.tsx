@@ -1,9 +1,9 @@
-import Image from 'next/image';
+//assignments table at /dashboard/assignments
+
 import { UpdateAssignment, DeleteAssignment } from '@/app/ui/assignments/buttons';
 
 //import { formatDateToLocal } from '@/app/lib/utils';
-import fetchAssignments from '@/app/lib/clever';
-import fetchSections from '@/app/lib/clever';
+import { fetchAssignments, fetchSections } from '@/app/lib/clever';
 
 export default async function AssignmentsTable({
   query,
@@ -55,10 +55,10 @@ export default async function AssignmentsTable({
                   Section Name
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Assignee Mode
+                  Due Date
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Due Date
+                  Actions
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -79,9 +79,9 @@ export default async function AssignmentsTable({
                   <td className="whitespace-nowrap px-3 py-3">
                     {assignment.section_id}
                   </td>
-                  {/* <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(assignment.due_date)}
-              </td> */}
+                  <td className="whitespace-nowrap px-3 py-3">
+                    
+                  </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <UpdateAssignment id={assignment.id} />

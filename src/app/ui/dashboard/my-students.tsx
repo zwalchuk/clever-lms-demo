@@ -1,3 +1,5 @@
+// students table on /dashboard/students
+
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -5,7 +7,7 @@ import { inter } from '@/app/ui/fonts';
 import { CleverDataFetcher } from '@/app/lib/clever';
 
 export default async function fetchStudentData() {
-    const fetcher = new CleverDataFetcher(process.env.DAC_TOKEN)
+    const fetcher = new CleverDataFetcher()
     const studentData = await fetcher.fetchStudents();
     return (
         <div className="flex w-full flex-col md:col-span-4">
