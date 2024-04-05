@@ -60,13 +60,22 @@ export class Section {
   }
 };
 
-export type Assignment = {
+export class Assignment {
   id: string;
   title: string;
   description: string;
   due_date: string;
   points_possible: Number;
-  submission_types: string[];
+  //submission_types: Array<String>;
+
+  constructor(data) {
+    this.id = data.id;
+    this.title = data.title;
+    this.description = data.description;
+    this.due_date = data.due_date;
+    this.points_possible = data.points_possible;
+    //this.submission_types = data.submission_types;
+  }
 };
 
 export type Submission = {

@@ -1,8 +1,6 @@
 //assignments table at /dashboard/assignments
 
 import { UpdateAssignment, DeleteAssignment } from '@/app/ui/assignments/buttons';
-
-//import { formatDateToLocal } from '@/app/lib/utils';
 import { fetchAssignments, fetchSections } from '@/app/lib/clever';
 
 export default async function AssignmentsTable({
@@ -35,7 +33,7 @@ export default async function AssignmentsTable({
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   {/*<div>
-                    <p>{formatDateToLocal(assignment.due_date)}</p>
+                    <p>{assignment.due_date}</p>
                   </div> */}
                   <div className="flex justify-end gap-2">
                     <UpdateAssignment id={assignment.id} />

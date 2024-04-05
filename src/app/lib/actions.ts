@@ -40,7 +40,7 @@ export type State = {
         description?: string[];
         dueDate?: string[];
         points_possible?: string[];
-        //submission_types?: string[];
+        //submission_types?: Array<String>;
     }
     message?: string | null;
 }
@@ -80,12 +80,11 @@ export async function createAssignment(prevState: State, formData: FormData) {
         body: JSON.stringify({ title, description, due_date, points_possible })
     });
     const data = await response.json();
-
     console.log(data);
 
-    const assignment: Assignment = data;
-
-    const id = assignment.id
+    const assignment = Object.assign(new Assignment(data.data), response.json)
+    console.log(assignment)
+    //const id = assignment.id
 
     if (response.status !== 200) {
         throw new Error(data.message)
@@ -96,7 +95,7 @@ export async function createAssignment(prevState: State, formData: FormData) {
     try {
         await sql`
         INSERT INTO assignments (id, section_id)
-        VALUES (${id}, ${section_id})
+        VALUES (${assignment.id}, ${section_id})
         `;
     } catch (error) {
         return { message: 'Database Error: Failed to save assignment.'}

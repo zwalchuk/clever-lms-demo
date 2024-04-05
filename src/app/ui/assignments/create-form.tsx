@@ -3,7 +3,7 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { Assignment, Section } from '@/app/lib/definitions';
+import { Section } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   UserIcon,
