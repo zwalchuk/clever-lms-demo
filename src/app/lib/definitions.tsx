@@ -64,11 +64,8 @@ export type Assignment = {
   id: string;
   title: string;
   description: string;
-  state: string;
-  assignee_ids: string;
   due_date: string;
   points_possible: Number;
-  grading_type: string;
   submission_types: string[];
 };
 
