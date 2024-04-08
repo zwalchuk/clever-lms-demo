@@ -2,12 +2,13 @@
 
 'use server';
 
-import { Section, Assignment, Submission} from '@/app/lib/definitions'
+import { Section, Assignment, Submission, SectionIdSql} from '@/app/lib/definitions'
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import AssignmentsTable from '../ui/assignments/table';
+import { CleverDataFetcher, fetchAssignmentById, fetchSectionByAssignmentId } from './clever';
 
 const token = process.env.DAC_TOKEN;
 
@@ -68,8 +69,6 @@ export async function createAssignment(prevState: State, formData: FormData) {
     const { section_id, title, description, dueDate, points_possible } = validatedFields.data;
     const due_date = new Date(dueDate);
 
-    console.log(validatedFields)
-
     // POST form data to Clever API to create new assignment for section
     const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments`, {
         method: 'POST',
@@ -80,11 +79,7 @@ export async function createAssignment(prevState: State, formData: FormData) {
         body: JSON.stringify({ title, description, due_date, points_possible })
     });
     const data = await response.json();
-    console.log(data);
-
     const assignment = Object.assign(new Assignment(data.data), response.json)
-    console.log(assignment)
-    //const id = assignment.id
 
     if (response.status !== 200) {
         throw new Error(data.message)
@@ -104,15 +99,83 @@ export async function createAssignment(prevState: State, formData: FormData) {
         redirect('/dashboard/assignments');
 }
 
-//need to add Clever API delete function
+export async function updateAssignment(
+    id: string,
+    prevState: State,
+    formData: FormData,
+) {
+    console.log(id);
+    const assignment = await fetchAssignmentById(id);
+    const section = await fetchSectionByAssignmentId(id);
+
+    console.log(section);
+    const fetcher = new CleverDataFetcher;
+    const assignmentData = await fetcher.getAssignment(section, id);
+    console.log(assignmentData);
+    
+    const validatedFields = UpdateAssignment.safeParse({
+        title: formData.get('title'),
+        description: formData.get('description'),
+        dueDate: formData.get('dueDate'),
+        points_possible: formData.get('points_possible'),
+        //submission_types: formData.get('submission_types'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing fields. Failed to Update Assignment.',
+        };
+    }
+
+    const { title, description, dueDate, points_possible } = validatedFields.data;
+    const due_date = new Date(dueDate);
+
+    const response = await fetch(`https://api.clever.com/v3.1/sections/${section.section_id}/assignments/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, description, due_date, points_possible })
+    });
+    const data = await response.json();
+
+    if (response.status !== 200) {
+        throw new Error(data.message)
+    }
+    else console.log('Successfully updated assignment')
+
+    revalidatePath('/dashboard/assignments');
+    redirect('/dashboard/assignments');
+
+}
+
+//TODO: need to add Clever API delete function
 export async function deleteAssignment(id: string) {
+    const section_id = await fetchSectionByAssignmentId(id);
+    const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+    });
+
+    const data = await response.json();
+
+    if (response.status !== 200) {
+        throw new Error(data.message)
+    }
+    else console.log('Assignment successfully deleted.')
+
     try {
         await sql`
         DELETE FROM assignments
         WHERE id = ${id}
         `;
     } catch (error) {
-        return { message: 'Database Error: Failed to delete assignment.'}
+        return { message: 'Database Error: Failed to delete assignment from SQL database.'}
     }
 
     revalidatePath('/dashboard/assignments');

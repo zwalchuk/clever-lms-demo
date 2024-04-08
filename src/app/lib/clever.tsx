@@ -1,6 +1,6 @@
-// Clever API calls
+// Clever API and SQL calls
 
-import { Student, Section, Assignment, Submission, SectionField } from '@/app/lib/definitions';
+import { Student, Section, Assignment, Submission, AssignmentSql, SectionIdSql } from '@/app/lib/definitions';
 import { unstable_noStore as noStore } from 'next/cache';
 import { sql } from '@vercel/postgres';
 
@@ -15,7 +15,7 @@ export class CleverDataFetcher {
           'Content-Type': 'application/json'
       },
     });
-    
+    console.log(url)
     const data = await res.json();
 
     if (res.status !== 200) {
@@ -34,10 +34,14 @@ export class CleverDataFetcher {
     return section.data.map((data) => new Section(data.data));
   }
 
-   async getAssignment() {
+   async getAssignment(
+    sectionId: string,
+    assignmentId: string,
+   ) {
     noStore();
-    const assignmentData = await this.fetch(`https://api.clever.com/v3.1/sections/657b35c16a1a3e5c217dcd67/assignments/2c257413-3bb4-428a-b215-98a303f91b4c`)
-    return assignmentData.data.map((data) => new Assignment(data.data));
+    const assignmentData = await this.fetch(`https://api.clever.com/v3.1/sections/${sectionId}/assignments/${assignmentId}`)
+    
+    return assignmentData
   }
 }
 
@@ -63,7 +67,8 @@ export async function fetchAssignments() {
   try {
     const data = await sql<Assignment>`
     SELECT assignments.id, assignments.section_id
-    FROM assignments`;
+    FROM assignments
+    LIMIT 6`;
 
     const assignments = data.rows.map((assignment) => ({
       ...assignment,
@@ -77,6 +82,33 @@ export async function fetchAssignments() {
 }
 
 const ITEMS_PER_PAGE = 6;
+
+export async function fetchFilteredAssignments(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const assignments = await sql<Assignment>`
+    SELECT
+      assignments.id,
+      assignments.section_id
+    FROM assignments
+    WHERE
+      assignments.id ILIKE ${`%${query}%`} OR
+      assignments.section_id ILIKE ${`%${query}%`}
+    ORDER BY assignments.id DESC
+    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+  `;
+
+  return assignments.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
+}
 
 export async function fetchAssignmentsPages(query: string) {
   noStore();
@@ -94,15 +126,49 @@ export async function fetchAssignmentsPages(query: string) {
   }
 }
 
-/*
-  async createAssignment() {
-    // TODO: Implement this
-  }
+export async function fetchAssignmentById(id: string) {
+  noStore();
+  try {
+    const data = await sql<AssignmentSql>`
+    SELECT
+      assignments.id,
+      assignments.section_id
+    FROM assignments
+    WHERE assignments.id = ${id};
+    `;
 
-  async getAssignment() {
-    noStore();
-    const assignment = await this.fetch(`https://api.clever.com/v3.1/sections/${section.id}/assignments/${assignment.id}`)
+    const assignment = data.rows.map((assignment) => ({
+      ...assignment,
+    }));
+    return assignment[0];
+  } catch (error) {
+    console.error('Databse Error:', error);
+    throw new Error('Failed to fetch assignment.');
   }
+}
+
+export async function fetchSectionByAssignmentId(id: string) {
+  noStore();
+  try {
+    const data = await sql<SectionIdSql>`
+    SELECT
+      assignments.section_id
+    FROM assignments
+    WHERE assignments.id = ${id};
+    `;
+
+    const section = data.rows.map((section) => ({
+      ...section,
+    }));
+    console.log(section);
+    return section[0];
+  } catch (error) {
+    console.error('Databse Error:', error);
+    throw new Error('Failed to fetch section.');
+  }
+}
+
+/*
 
   async updateAssignment() {
     // TODO: Implement this

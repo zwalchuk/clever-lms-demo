@@ -1,14 +1,11 @@
-// Create Assignments Form
+// Edit Assignments Form
 
 'use client';
 
 import { useFormState } from 'react-dom';
-import { Section } from '@/app/lib/definitions';
+import { AssignmentSql, Section, SectionIdSql } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
-  UserIcon,
-  UserGroupIcon,
-  PresentationChartBarIcon,
   ClipboardDocumentCheckIcon,
   InboxIcon,
   PencilSquareIcon,
@@ -20,42 +17,19 @@ import {
   ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
-import { createAssignment } from '@/app/lib/actions';
+import { createAssignment, updateAssignment } from '@/app/lib/actions';
+import { UpdateAssignment } from './buttons';
 
-export default function Form({ sections }: { sections: Section[] }) {
+export default function EditAssignmentForm({
+    assignment,
+}: {
+    assignment: AssignmentSql;
+}) {
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createAssignment, initialState);
+  const [state, dispatch] = useFormState(updateAssignment, initialState);
   return (
     <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
-
-        {/* Section ID */}
-        <div className="mb-4">
-          <label htmlFor="title" className="mb-2 block text-sm font-medium">
-            Clever Section ID
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="section_id"
-                name="section_id"
-                type="string"
-                placeholder="657b35c16a1a3e5c217dcd64"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-400"
-                aria-describedby='section_id-error'
-              />
-              <PresentationChartBarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-            <div id="section_id-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.section_id &&
-                state.errors.section_id.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))}
-            </div>
-          </div>
-        </div>
 
         {/* Assignment Title */}
         <div className="mb-4">
@@ -255,7 +229,7 @@ export default function Form({ sections }: { sections: Section[] }) {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Assignment</Button>
+        <Button type="submit">Edit Assignment</Button>
       </div>
     </form>
   );

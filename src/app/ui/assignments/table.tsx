@@ -1,7 +1,8 @@
 //assignments table at /dashboard/assignments
 
 import { UpdateAssignment, DeleteAssignment } from '@/app/ui/assignments/buttons';
-import { fetchAssignments, fetchSections } from '@/app/lib/clever';
+import { fetchAssignments, fetchFilteredAssignments } from '@/app/lib/clever';
+import Link from 'next/link';
 
 export default async function AssignmentsTable({
   query,
@@ -10,8 +11,7 @@ export default async function AssignmentsTable({
   query: string;
   currentPage: number;
 }) {
-  const assignments = await fetchAssignments(query, currentPage);
-  const sections = await fetchSections();
+  const assignments = await fetchFilteredAssignments(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
@@ -26,9 +26,13 @@ export default async function AssignmentsTable({
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <p>{assignment.title}</p>
+                    <Link 
+                    href={`/dashboard/sections/${assignment.id}/assignments`}
+                    className="truncate sm:block">
+                      {assignment.id}
+                    </Link>
                     </div>
-                    <p className="text-sm text-gray-500">{assignment.id}</p>
+                    <p className="text-sm text-gray-500">{assignment.section_id}</p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
@@ -52,9 +56,6 @@ export default async function AssignmentsTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Section ID
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Actions
-                </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
                 </th>
@@ -68,14 +69,15 @@ export default async function AssignmentsTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{assignment.id}</p>
+                      <Link 
+                    href={`/dashboard/assignments/${assignment.id}`}
+                    className="truncate sm:block">
+                      {assignment.id}
+                    </Link>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {assignment.section_id}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

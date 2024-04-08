@@ -78,6 +78,11 @@ export class Assignment {
   }
 };
 
+export type AssignmentSql = {
+  id: string;
+  section_id: string;
+};
+
 export type Submission = {
   id: string;
   assignment_id: string;
@@ -87,7 +92,6 @@ export type Submission = {
   user_id: string;
 };
 
-export type SectionField = {
-  id: string;
-  name: string;
+export type SectionIdSql = {
+  section_id: string;
 };
