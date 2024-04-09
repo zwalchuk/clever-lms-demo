@@ -32,7 +32,7 @@ const FormSchema = z.object({
 });
 
 const CreateAssignment = FormSchema
-const UpdateAssignment = FormSchema
+const UpdateAssignment = FormSchema.omit({ section_id: true })
 
 export type State = {
     errors?: {
@@ -84,7 +84,7 @@ export async function createAssignment(prevState: State, formData: FormData) {
     if (response.status !== 200) {
         throw new Error(data.message)
     }
-    else console.log(`Create assignment complete...make a GET request using assignment id: ${assignment.id} and section id: ${section_id} to confirm successful POST.`)
+    else console.log(`Created assignment succesfully. id: ${assignment.id} section id: ${section_id}`)
 
     // insert database record for assignment
     try {
@@ -104,14 +104,6 @@ export async function updateAssignment(
     prevState: State,
     formData: FormData,
 ) {
-    console.log(id);
-    const assignment = await fetchAssignmentById(id);
-    const section = await fetchSectionByAssignmentId(id);
-
-    console.log(section);
-    const fetcher = new CleverDataFetcher;
-    const assignmentData = await fetcher.getAssignment(section, id);
-    console.log(assignmentData);
     
     const validatedFields = UpdateAssignment.safeParse({
         title: formData.get('title'),
@@ -131,7 +123,9 @@ export async function updateAssignment(
     const { title, description, dueDate, points_possible } = validatedFields.data;
     const due_date = new Date(dueDate);
 
-    const response = await fetch(`https://api.clever.com/v3.1/sections/${section.section_id}/assignments/${id}`, {
+    const assignment = Assignment
+
+    const response = await fetch(`https://api.clever.com/v3.1/sections/${assignment.section_id}/assignments/${assignment.id}`, {
         method: 'PATCH',
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -151,7 +145,7 @@ export async function updateAssignment(
 
 }
 
-//TODO: need to add Clever API delete function
+//TODO: need to add Clever API delete function - still need to test and tweak
 export async function deleteAssignment(id: string) {
     const section_id = await fetchSectionByAssignmentId(id);
     const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${id}`, {

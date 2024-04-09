@@ -7,7 +7,7 @@ import { SectionSkeleton, CardsSkeleton, MySectionsSkeleton } from '@/app/ui/ske
 
 export default async function Home() {
     return( 
-<main>
+    <main>
       <h1 className={`${inter.className} mb-4 text-xl md:text-4xl`}>
         Dashboard
       </h1>

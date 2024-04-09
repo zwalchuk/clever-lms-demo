@@ -3,7 +3,7 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { Section } from '@/app/lib/definitions';
+import { Assignment, Section } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   UserIcon,
@@ -22,7 +22,7 @@ import {
 import { Button } from '@/app/ui/button';
 import { createAssignment } from '@/app/lib/actions';
 
-export default function Form({ sections }: { sections: Section[] }) {
+export default function Form({ assignments }: { assignments: Assignment[] }) {
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(createAssignment, initialState);
   return (

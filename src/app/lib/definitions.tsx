@@ -78,18 +78,28 @@ export class Assignment {
   }
 };
 
-export type AssignmentSql = {
-  id: string;
-  section_id: string;
-};
-
-export type Submission = {
+export class Submission {
   id: string;
   assignment_id: string;
   state: string;
   attachments: string[];
   grader_id: string;
   user_id: string;
+
+  constructor(data) {
+    this.id = data.id;
+    this.assignment_id = data.assignment_id;
+    this.state = data.stata;
+    this.attachments = data.attachments;
+    this.grader_id = data.grader_id;
+    this.user_id = data.user_id
+    
+  }
+};
+// the classes above could prob be used instead, but I created these for specific functions on pages/components 
+export type AssignmentSql = {
+  id: string;
+  section_id: string;
 };
 
 export type SectionIdSql = {

@@ -34,17 +34,20 @@ export class CleverDataFetcher {
     return section.data.map((data) => new Section(data.data));
   }
 
-   async getAssignment(
-    sectionId: string,
-    assignmentId: string,
-   ) {
+   async getAssignment(sectionId: string, assignmentId: string) {
     noStore();
     const assignmentData = await this.fetch(`https://api.clever.com/v3.1/sections/${sectionId}/assignments/${assignmentId}`)
-    
     return assignmentData
+  }
+
+  async getSubmissions(sectionId: string, assignmentId: string) {
+    noStore();
+    const submissions = await this.fetch(`https://api.clever.com/v3.1/sections${sectionId}/assignments/${assignmentId}/submissions`)
+    return submissions.data.map((data) => new Submission(data.data));
   }
 }
 
+//needed to create a new fetchSections, fetchAssignments functions bc classes can't be imported to client side
 export async function fetchSections() {
   const res = await fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8b/sections', {
     headers: {
@@ -81,6 +84,7 @@ export async function fetchAssignments() {
 
 }
 
+// this powers the search page for Assignments
 const ITEMS_PER_PAGE = 6;
 
 export async function fetchFilteredAssignments(
@@ -126,6 +130,8 @@ export async function fetchAssignmentsPages(query: string) {
   }
 }
 
+
+//need to use id from params to run these functions:
 export async function fetchAssignmentById(id: string) {
   noStore();
   try {
@@ -168,29 +174,17 @@ export async function fetchSectionByAssignmentId(id: string) {
   }
 }
 
-/*
-
-  async updateAssignment() {
-    // TODO: Implement this
-  }
-
-  async deleteAssignment() {
-    // TODO: Implement this
-  }
+/* TODO: 
 
   async createSubmission() {
-    // TODO: Implement this
   }
 
   async getSubmission() {
-    // TODO: Implement this
   }
 
   async updateSubmission() {
-    // TODO: Implement this
   }
 
   async deleteSubmission() {
-    // TODO: Implement this
   }
 */
