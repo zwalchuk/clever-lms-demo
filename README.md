@@ -2,7 +2,17 @@ This is a [Next.js](https://nextjs.org/) project.
 
 ## Getting Started
 
-First, get a [Clever Data API token](https://dev.clever.com/reference/gettokens). Replace `TEST_TOKEN` with your token. 
+First, get a [Clever Data API token](https://dev.clever.com/reference/gettokens). Create a .env file and add a variable called DAC_TOKEN. Keep in mind that this project is using the Google Classroom Sandbox and the dev app [65b1bd709d5ec60001593ed0](https://hall-monitor.int.clever.com/applications/65b1bd709d5ec60001593ed0).
+
+This project uses a small SQL database to keep track of assignments and their associated sections. I recommend creating an account with [Vercel](https://vercel.com/) and connecting your GitHub account to then deploy to Vercel and use a SQL database.
+
+Once the project is deployed and you've initialized a SQL database in Vercel, run the following command:
+
+```bash
+npm run seed
+```
+
+This will seed the database with some initial assignment and section data. 
 
 Next, run the development server:
 
