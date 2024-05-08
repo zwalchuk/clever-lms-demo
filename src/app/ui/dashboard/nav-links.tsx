@@ -21,11 +21,6 @@ const links = [
     href: '/dashboard/assignments',
     icon: DocumentDuplicateIcon,
   },
-  { 
-    name: 'Submissions', 
-    href: '/dashboard/submissions',
-    icon: InboxArrowDownIcon 
-  },
   { name: 'My Students', 
     href: '/dashboard/students',
     icon: UserGroupIcon 

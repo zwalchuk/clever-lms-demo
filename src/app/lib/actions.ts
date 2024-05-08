@@ -174,3 +174,44 @@ export async function deleteAssignment(id: string) {
 
     revalidatePath('/dashboard/assignments');
 }
+
+const SubmissionSchema = z.object({
+    textInput: z
+        .string()
+        .min(1, { message: 'Please provide submission text.' }),
+});
+
+
+const UpdateSubmission = SubmissionSchema
+//hard coding the values for now - ideally this function would be similar to the updateAssignment function above
+export async function updateSubmission(prevState: State, formData: FormData) {
+    const section_id = '657b35c16a1a3e5c217dcd67'
+    const assignmentId = 'f7696d7a-d8f3-492f-ab99-64a3c300d12e'
+    const submissionId = '6d2ef7f3-4f50-44c7-b87b-152c507aa336'
+    
+    const validatedFields = SubmissionSchema.safeParse({
+        textInput: formData.get('textInput'),
+    });
+
+    const submissionText = validatedFields.data
+    const grade_points = '94'
+
+    const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${assignmentId}/submissions/${submissionId}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionText, grade_points)
+    });
+
+    const data = await response.json();
+
+    if (response.status !== 200) {
+        throw new Error(data.message)
+    }
+    else console.log ('Submission successfully updated.')
+
+    revalidatePath('/dashboard/assignments');
+    redirect('/dashboard/assignments');
+}
