@@ -37,13 +37,19 @@ export class CleverDataFetcher {
    async getAssignment(sectionId: string, assignmentId: string) {
     noStore();
     const assignmentData = await this.fetch(`https://api.clever.com/v3.1/sections/${sectionId}/assignments/${assignmentId}`)
-    return assignmentData
+    return assignmentData;
   }
 
   async getSubmissions(sectionId: string, assignmentId: string) {
     noStore();
-    const submissions = await this.fetch(`https://api.clever.com/v3.1/sections${sectionId}/assignments/${assignmentId}/submissions`)
-    return submissions.data.map((data) => new Submission(data.data));
+    const submissions = await this.fetch(`https://api.clever.com/v3.1/sections/${sectionId}/assignments/${assignmentId}/submissions`)
+    return submissions;
+  }
+
+  async getUserSubmission(sectionId: string, assignmentId: string, userId: string) {
+    noStore();
+    const submission = await this.fetch(`https://api.clever.com/v3.1/sections/${sectionId}/assignments/${assignmentId}/submissions/${userId}`)
+    return submission;
   }
 }
 
@@ -140,7 +146,8 @@ export async function fetchAssignmentById(id: string) {
       assignments.id,
       assignments.section_id
     FROM assignments
-    WHERE assignments.id = ${id};
+    WHERE 
+      assignments.id = ${id};
     `;
 
     const assignment = data.rows.map((assignment) => ({
@@ -166,7 +173,6 @@ export async function fetchSectionByAssignmentId(id: string) {
     const section = data.rows.map((section) => ({
       ...section,
     }));
-    console.log(section);
     return section[0];
   } catch (error) {
     console.error('Databse Error:', error);
@@ -175,13 +181,6 @@ export async function fetchSectionByAssignmentId(id: string) {
 }
 
 /* TODO: 
-
-  async createSubmission() {
-  }
-
-  async getSubmission() {
-  }
-
   async updateSubmission() {
   }
 

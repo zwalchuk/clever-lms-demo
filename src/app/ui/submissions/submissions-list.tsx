@@ -4,13 +4,17 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { inter } from '@/app/ui/fonts';
-import { CleverDataFetcher, fetchAssignmentById } from '@/app/lib/clever';
+import { CleverDataFetcher, fetchAssignmentById, fetchSectionByAssignmentId } from '@/app/lib/clever';
 
-export default async function SubmissionsTable() {
+export default async function SubmissionsTable({ params }: {params: {id:string}}) {
     
-    const assignment = await fetchAssignmentById();
+    /*const id = params.id;
+    const assignment = await fetchAssignmentById(id);
+    const section = await fetchSectionByAssignmentId(id); */
+    
+    // hard-coded the section and assignment values for now
     const fetcher = new CleverDataFetcher();
-    const submissionData = await fetcher.getSubmissions(assignment.section_id, assignment.id);
+    const submission = await fetcher.getSubmissions('657b35c16a1a3e5c217dcd67', 'f7696d7a-d8f3-492f-ab99-64a3c300d12e');
 
     return (
         <div className="flex w-full flex-col md:col-span-4">
@@ -19,7 +23,7 @@ export default async function SubmissionsTable() {
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
         {<div className="bg-white px-6">
-          {submissionData.map((submission, i) => {
+          {submission.data.map((submission, i) => {
             return (
               <div
                 key={submission.id}
@@ -33,12 +37,12 @@ export default async function SubmissionsTable() {
                 <div className="flex items-center">
                   <div className="min-w-0">
                     <Link 
-                    href={`/dashboard/sections`}
+                    href={`/dashboard/submissions/${submission.id}/edit`}
                     className="truncate text-lg text-gray-700 font-semibold sm:block">
                       {submission.id}
                     </Link>
                     <p className="text-sm text-gray-400 font-normal md:text-base">
-                      {submission.assignment_id}
+                      {submission.user_id}
                     </p>
                   </div>
                 </div>

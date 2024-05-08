@@ -15,11 +15,12 @@ export default async function Page({ params }: {params: {id:string}}) {
 
     const fetcher = new CleverDataFetcher
     const assignmentData = await fetcher.getAssignment(assignment.section_id, assignment.id)
+    const submissionData = await fetcher.getSubmissions(assignment.section_id, assignment.id)
 
     return (
       <main>
       <h1 className={`${inter.className} mb-4 text-xl md:text-4xl`}>
-        Dashboard
+        Assignment
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       
