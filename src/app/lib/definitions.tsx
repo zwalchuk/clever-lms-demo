@@ -96,7 +96,7 @@ export class Submission {
     
   }
 };
-// the classes above could prob be used instead, but I created these for specific functions on pages/components 
+// the classes above could prob be used instead, but I created these for specific functions in actions.ts
 export type AssignmentSql = {
   id: string;
   section_id: string;

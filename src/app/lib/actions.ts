@@ -145,7 +145,7 @@ export async function updateAssignment(
 
 }
 
-//TODO: need to add Clever API delete function - still need to test and tweak
+//TODO: still need to test and tweak
 export async function deleteAssignment(id: string) {
     const section_id = await fetchSectionByAssignmentId(id);
     const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${id}`, {
@@ -176,9 +176,11 @@ export async function deleteAssignment(id: string) {
 }
 
 const SubmissionSchema = z.object({
-    textInput: z
+    text: z
+        .string(),
+    link: z
         .string()
-        .min(1, { message: 'Please provide submission text.' }),
+        .min(1, { message: 'Please provide a submission link.'}),
 });
 
 
@@ -190,11 +192,30 @@ export async function updateSubmission(prevState: State, formData: FormData) {
     const submissionId = '6d2ef7f3-4f50-44c7-b87b-152c507aa336'
     
     const validatedFields = SubmissionSchema.safeParse({
-        textInput: formData.get('textInput'),
+        URL: formData.get('URL'),
     });
 
-    const submissionText = validatedFields.data
-    const grade_points = '94'
+    /*
+    type - link
+    title - hard code title
+    URL - https://clever.com
+    */
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing fields. Failed to update Submission.',
+        };
+    }
+
+    const grade_points = 95.0
+    const type = 'link'
+    const title = 'HW - Angelo'
+    const attachments = [type, title, validatedFields.data]
+
+    
+    console.log(attachments);
+    console.log(JSON.stringify({attachments, grade_points, title, type}));
 
     const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${assignmentId}/submissions/${submissionId}`, {
         method: 'PATCH',
@@ -202,9 +223,9 @@ export async function updateSubmission(prevState: State, formData: FormData) {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(submissionText, grade_points)
+        body: JSON.stringify({attachments, grade_points, title, type})
     });
-
+    
     const data = await response.json();
 
     if (response.status !== 200) {
