@@ -153,20 +153,22 @@ export async function updateAssignment(prevState: State, formData: FormData) {
 //TODO: still need to test and tweak
 export async function deleteAssignment(id: string) {
     const section_id = await fetchSectionByAssignmentId(id);
-    const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${id}`, {
+
+    console.log(section_id.section_id)
+
+    const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id.section_id}/assignments/${id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
         },
     });
-
     const data = await response.json();
 
-    if (response.status !== 200) {
+    /*if (response.status !== 204) {
         throw new Error(data.message)
     }
-    else console.log('Assignment successfully deleted.')
+    else console.log('Assignment successfully deleted.')*/
 
     try {
         await sql`

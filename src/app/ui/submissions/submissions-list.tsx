@@ -15,6 +15,7 @@ export default async function SubmissionsTable({ params }: {params: {id:string}}
     // hard-coded the section and assignment values for now
     const fetcher = new CleverDataFetcher();
     const submission = await fetcher.getSubmissions('657b35c16a1a3e5c217dcd67', 'f7696d7a-d8f3-492f-ab99-64a3c300d12e');
+    const student = await fetcher.getStudent('657b35c16a1a3e5c217dcd30');
 
     return (
         <div className="flex w-full flex-col md:col-span-4">
@@ -23,10 +24,10 @@ export default async function SubmissionsTable({ params }: {params: {id:string}}
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
         {<div className="bg-white px-6">
-          {submission.data.map((submission, i) => {
+          {student?.data.map((student, i) => {
             return (
               <div
-                key={submission.id}
+                key={student.id}
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
@@ -39,10 +40,10 @@ export default async function SubmissionsTable({ params }: {params: {id:string}}
                     <Link 
                     href={`/dashboard/submissions/${submission.id}/edit`}
                     className="truncate text-lg text-gray-700 font-semibold sm:block">
-                      {submission.id}
+                      {student.name}
                     </Link>
                     <p className="text-sm text-gray-400 font-normal md:text-base">
-                      {submission.user_id}
+                      {student.user_id}
                     </p>
                   </div>
                 </div>

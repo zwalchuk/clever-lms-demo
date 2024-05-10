@@ -10,8 +10,6 @@ export default async function Page({ params }: {params: {id:string}}) {
     const id = params.id;
     const assignment = await fetchAssignmentById(id);
     const section = await fetchSectionByAssignmentId(id);
-    
-    console.log(section, assignment)
 
     const fetcher = new CleverDataFetcher
     const assignmentData = await fetcher.getAssignment(assignment.section_id, assignment.id)

@@ -28,6 +28,11 @@ export class CleverDataFetcher {
     return students.data.map((data) => new Student(data.data));
   }
 
+  async getStudent(user_id: string) {
+    const student = await this.fetch(`https://api.clever.com/v3.0/users/${user_id}`);
+    return student;
+  }
+
   async fetchSections() {
     noStore();
     const section = await this.fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8b/sections');
@@ -113,11 +118,11 @@ export async function fetchFilteredAssignments(
     LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
   `;
 
-  return assignments.rows;
+  return assignments.rows
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
-  }
+    throw new Error('Failed to fetch assignments.');
+    }
 }
 
 export async function fetchAssignmentsPages(query: string) {
