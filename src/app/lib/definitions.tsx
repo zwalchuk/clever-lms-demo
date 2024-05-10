@@ -96,6 +96,20 @@ export class Submission {
     
   }
 };
+
+export class Attachment {
+  type: string;
+  title: string;
+  description: string;
+  URL: string;
+
+  constructor(data) {
+    this.type = data.type;
+    this.title = data.title;
+    this.description = data.description;
+    this.URL = data.URL;
+  }
+}
 // the classes above could prob be used instead, but I created these for specific functions in actions.ts
 export type AssignmentSql = {
   id: string;

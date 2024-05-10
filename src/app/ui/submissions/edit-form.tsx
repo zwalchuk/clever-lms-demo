@@ -29,7 +29,7 @@ export default function UpdateSubmissionForm({
     <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
 
-        {/* Text Body */}
+        {/* Text Body 
         <div className="mb-4">
           <label htmlFor="title" className="mb-2 block text-sm font-medium">
             Submission Text
@@ -55,7 +55,7 @@ export default function UpdateSubmissionForm({
                 ))}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Link */}
         <div className="mb-4">

@@ -2,7 +2,7 @@
 
 'use server';
 
-import { Section, Assignment, Submission, SectionIdSql} from '@/app/lib/definitions'
+import { Section, Assignment, Submission, SectionIdSql, AssignmentSql} from '@/app/lib/definitions'
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
@@ -31,8 +31,15 @@ const FormSchema = z.object({
     }),*/
 });
 
+const UpdateFormSchema = z.object({
+    title: z.string(),
+    description: z.string(),
+    dueDate: z.coerce.date(),
+    points_possible: z.coerce.number(),
+});
+
 const CreateAssignment = FormSchema
-const UpdateAssignment = FormSchema.omit({ section_id: true })
+const UpdateAssignment = UpdateFormSchema
 
 export type State = {
     errors?: {
@@ -99,12 +106,8 @@ export async function createAssignment(prevState: State, formData: FormData) {
         redirect('/dashboard/assignments');
 }
 
-export async function updateAssignment(
-    id: string,
-    prevState: State,
-    formData: FormData,
-) {
-    
+export async function updateAssignment(prevState: State, formData: FormData) {
+
     const validatedFields = UpdateAssignment.safeParse({
         title: formData.get('title'),
         description: formData.get('description'),
@@ -123,9 +126,11 @@ export async function updateAssignment(
     const { title, description, dueDate, points_possible } = validatedFields.data;
     const due_date = new Date(dueDate);
 
-    const assignment = Assignment
+    
+    //const sectionId = fetchSectionByAssignmentId(Assignment.id)
+    //console.log(sectionId)
 
-    const response = await fetch(`https://api.clever.com/v3.1/sections/${assignment.section_id}/assignments/${assignment.id}`, {
+    const response = await fetch(`https://api.clever.com/v3.1/sections/${sectionId}/assignments/${id}`, {
         method: 'PATCH',
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -176,30 +181,29 @@ export async function deleteAssignment(id: string) {
 }
 
 const SubmissionSchema = z.object({
-    text: z
-        .string(),
-    link: z
+    type: z.literal('link'),
+    title: z.literal('HW - Angelo'),
+    description: z.literal('Week 5 Homework Submission'),
+    URL: z
         .string()
         .min(1, { message: 'Please provide a submission link.'}),
 });
 
-
 const UpdateSubmission = SubmissionSchema
+
 //hard coding the values for now - ideally this function would be similar to the updateAssignment function above
 export async function updateSubmission(prevState: State, formData: FormData) {
+    const userId = '657b35c16a1a3e5c217dcd30'
     const section_id = '657b35c16a1a3e5c217dcd67'
     const assignmentId = 'f7696d7a-d8f3-492f-ab99-64a3c300d12e'
     const submissionId = '6d2ef7f3-4f50-44c7-b87b-152c507aa336'
     
-    const validatedFields = SubmissionSchema.safeParse({
-        URL: formData.get('URL'),
+    const validatedFields = UpdateSubmission.safeParse({
+        type: "link",
+        title: "HW - Angelo",
+        description: "Week 5 Homework Submission",
+        URL: formData.get("URL")
     });
-
-    /*
-    type - link
-    title - hard code title
-    URL - https://clever.com
-    */
 
     if (!validatedFields.success) {
         return {
@@ -208,22 +212,20 @@ export async function updateSubmission(prevState: State, formData: FormData) {
         };
     }
 
+    console.log(validatedFields.data)
+    const attachments = [validatedFields.data]
     const grade_points = 95.0
-    const type = 'link'
-    const title = 'HW - Angelo'
-    const attachments = [type, title, validatedFields.data]
 
-    
-    console.log(attachments);
-    console.log(JSON.stringify({attachments, grade_points, title, type}));
-
-    const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${assignmentId}/submissions/${submissionId}`, {
+    const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${assignmentId}/submissions/${userId}`, {
         method: 'PATCH',
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({attachments, grade_points, title, type})
+        body: JSON.stringify({
+            attachments,
+            grade_points,
+        })
     });
     
     const data = await response.json();
