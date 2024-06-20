@@ -48,7 +48,7 @@ export type State = {
     message?: string | null;
 }
 
-export async function createAssignment(section_id: String, prevState: State, formData: FormData) {
+export async function createAssignment(section_id: string, prevState: State, formData: FormData) {
     // Validate form fields using Zod
     const validatedFields = CreateAssignment.safeParse({
         title: formData.get('title'),
@@ -65,7 +65,6 @@ export async function createAssignment(section_id: String, prevState: State, for
             message: 'Missing fields. Failed to Create Assignment.',
         };
     }
-    
     const { title, description, dueDate, points_possible, submission_types } = validatedFields.data;
     const due_date = new Date(dueDate);
     const attachments = [
