@@ -8,5 +8,5 @@ export default async function Page({ params }: {params: {id:string; sectionID:st
 
 
  
-    redirect(`/dashboard/sections/${sectionID}/assignments/${assignmentID}/submissions/664d092426cf6205b826b284/edit`)
+    redirect(`/dashboard/sections/${sectionID}/assignments/${id}/submissions/664d092426cf6205b826b284/edit`)
 }
