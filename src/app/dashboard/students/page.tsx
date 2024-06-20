@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { MyStudentsSkeleton } from '@/app/ui/skeletons';
 
 export default async function getStudents(){
-  const fetcher = new CleverDataFetcher(process.env.DAC_TOKEN);
+  const fetcher = new CleverDataFetcher();
   const studentData = await fetcher.fetchStudents();
 
     return(
