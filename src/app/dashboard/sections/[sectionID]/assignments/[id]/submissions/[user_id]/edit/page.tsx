@@ -1,14 +1,17 @@
 import Breadcrumbs from "@/app/ui/assignments/breadcrumbs";
-import { CleverDataFetcher } from "@/app/lib/clever";
+import { CleverDataFetcher, fetchSectionByAssignmentId} from "@/app/lib/clever";
 import { Submission } from "@/app/lib/definitions";
 import Form from "@/app/ui/submissions/edit-form";
 
-export default async function Page({ params }: {params: {id:string} }) {
+export default async function Page({ params }: {params: {id: string, user_id:string, sectionID: string} }) {
+    const user_id = params.user_id;
     const id = params.id;
+    const section = params.sectionID;
+
 
     //hard coding these values to save time
     const fetcher = new CleverDataFetcher
-    const submission = await fetcher.getUserSubmission('657b35c16a1a3e5c217dcd67', 'f7696d7a-d8f3-492f-ab99-64a3c300d12e', '657b35c16a1a3e5c217dcd30')
+    const submission = await fetcher.getUserSubmission(section, id, user_id)
 
     return (
         <main>
@@ -22,7 +25,7 @@ export default async function Page({ params }: {params: {id:string} }) {
               },
             ]}
           />
-          <Form submission={submission} />
+          <Form submission={submission} section={section} id={id} />
         </main>
       );
 }

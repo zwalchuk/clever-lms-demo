@@ -2,23 +2,22 @@ import Form from '@/app/ui/assignments/create-form';
 import Breadcrumbs from '@/app/ui/assignments/breadcrumbs';
 import { fetchSections } from '@/app/lib/clever';
  
-export default async function Page() {
+export default async function Page({ params }: {params: {sectionID: string}}) {
   //const fetcher = new CleverDataFetcher();
-  const sections = await fetchSections();
- 
+  const sectionID = params.sectionID;
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Assignments', href: '/dashboard/assignments' },
+          { label: 'Assignments', href: `/dashboard/sections/${sectionID}/assignments` },
           {
             label: 'Create Assignment',
-            href: '/dashboard/assignments/create',
+            href: `/dashboard/sections/${sectionID}/assignments/create`,
             active: true,
           },
         ]}
       />
-      <Form sections={sections} />
+      <Form section_id={sectionID} />
     </main>
   );
 }

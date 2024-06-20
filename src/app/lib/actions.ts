@@ -13,9 +13,6 @@ import { CleverDataFetcher, fetchAssignmentById, fetchSectionByAssignmentId } fr
 const token = process.env.DAC_TOKEN;
 
 const FormSchema = z.object({
-    section_id: z
-        .string()
-        .min(1, { message: 'Please enter a section id.' }),
     title: z
         .string()
         .min(1, { message: 'Please provide a title.' }),
@@ -26,9 +23,7 @@ const FormSchema = z.object({
     points_possible: z.coerce
         .number()
         .gt(0, {message: 'Please enter an amount greater than 0.'}),
-    /*submission_types: z.enum(['link', 'file', 'text', 'discussion'], {
-        invalid_type_error: 'Please select a submission type.',
-    }),*/
+    submission_types: z.string().array()
 });
 
 const UpdateFormSchema = z.object({
@@ -36,6 +31,7 @@ const UpdateFormSchema = z.object({
     description: z.string(),
     dueDate: z.coerce.date(),
     points_possible: z.coerce.number(),
+    submission_types: z.string().array()
 });
 
 const CreateAssignment = FormSchema
@@ -43,26 +39,23 @@ const UpdateAssignment = UpdateFormSchema
 
 export type State = {
     errors?: {
-        section_id?: string[];
         title?: string[];
         description?: string[];
         dueDate?: string[];
         points_possible?: string[];
-        //submission_types?: Array<String>;
+        submission_types?: Array<String>;
     }
     message?: string | null;
 }
 
-export async function createAssignment(prevState: State, formData: FormData) {
-    
+export async function createAssignment(section_id: String, prevState: State, formData: FormData) {
     // Validate form fields using Zod
     const validatedFields = CreateAssignment.safeParse({
-        section_id: formData.get('section_id'),
         title: formData.get('title'),
         description: formData.get('description'),
         dueDate: formData.get('dueDate'),
         points_possible: formData.get('points_possible'),
-        //submission_types: formData.get('submission_types'),
+        submission_types: ['link']
     });
 
     // If form validation fails, return errors early. Otherwise, continue.
@@ -73,8 +66,16 @@ export async function createAssignment(prevState: State, formData: FormData) {
         };
     }
     
-    const { section_id, title, description, dueDate, points_possible } = validatedFields.data;
+    const { title, description, dueDate, points_possible, submission_types } = validatedFields.data;
     const due_date = new Date(dueDate);
+    const attachments = [
+        {  
+            "url": "http://localhost:3000/assignment",  
+            "type": "link",  
+            "title": "Math Homework",  
+            "description": "A sample of math problems"  
+        }
+    ]
 
     // POST form data to Clever API to create new assignment for section
     const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments`, {
@@ -83,27 +84,28 @@ export async function createAssignment(prevState: State, formData: FormData) {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, description, due_date, points_possible })
+        body: JSON.stringify({ title, attachments, description, due_date, points_possible, submission_types })
     });
     const data = await response.json();
+    console.log(data)
     const assignment = Object.assign(new Assignment(data.data), response.json)
 
     if (response.status !== 200) {
         throw new Error(data.message)
     }
-    else console.log(`Created assignment succesfully. id: ${assignment.id} section id: ${section_id}`)
+    else console.log(`Created assignment succesfully. id: ${assignment.id} section id: ${section_id} title: ${title}`)
 
     // insert database record for assignment
     try {
         await sql`
-        INSERT INTO assignments (id, section_id)
-        VALUES (${assignment.id}, ${section_id})
+        INSERT INTO assignments (id, section_id, title)
+        VALUES (${assignment.id}, ${section_id}, ${title})
         `;
     } catch (error) {
         return { message: 'Database Error: Failed to save assignment.'}
     }
-        revalidatePath('/dashboard/assignments');
-        redirect('/dashboard/assignments');
+        revalidatePath('/dashboard/sections/' + section_id + '/assignments');
+        redirect('/dashboard/sections/' + section_id + '/assignments');
 }
 
 export async function updateAssignment(prevState: State, formData: FormData) {
@@ -113,7 +115,7 @@ export async function updateAssignment(prevState: State, formData: FormData) {
         description: formData.get('description'),
         dueDate: formData.get('dueDate'),
         points_possible: formData.get('points_possible'),
-        //submission_types: formData.get('submission_types'),
+        submission_types: ['link']
     });
 
     if (!validatedFields.success) {
@@ -163,12 +165,9 @@ export async function deleteAssignment(id: string) {
             'Content-Type': 'application/json',
         },
     });
-    const data = await response.json();
 
-    /*if (response.status !== 204) {
-        throw new Error(data.message)
-    }
-    else console.log('Assignment successfully deleted.')*/
+
+
 
     try {
         await sql`
@@ -184,8 +183,8 @@ export async function deleteAssignment(id: string) {
 
 const SubmissionSchema = z.object({
     type: z.literal('link'),
-    title: z.literal('HW - Angelo'),
-    description: z.literal('Week 5 Homework Submission'),
+    title: z.literal('Homework'),
+    description: z.literal('Homework Submission'),
     URL: z
         .string()
         .min(1, { message: 'Please provide a submission link.'}),
@@ -194,16 +193,16 @@ const SubmissionSchema = z.object({
 const UpdateSubmission = SubmissionSchema
 
 //hard coding the values for now - ideally this function would be similar to the updateAssignment function above
-export async function updateSubmission(prevState: State, formData: FormData) {
-    const userId = '657b35c16a1a3e5c217dcd30'
-    const section_id = '657b35c16a1a3e5c217dcd67'
-    const assignmentId = 'f7696d7a-d8f3-492f-ab99-64a3c300d12e'
-    const submissionId = '6d2ef7f3-4f50-44c7-b87b-152c507aa336'
+export async function updateSubmission(prevState: State, formData: FormData, section: string) {
+    console.log(prevState);
+    const userId = prevState.message.user_id;
+    const section_id = prevState.message.section;
+    const assignmentId = prevState.message.id;
     
     const validatedFields = UpdateSubmission.safeParse({
         type: "link",
-        title: "HW - Angelo",
-        description: "Week 5 Homework Submission",
+        title: "Homework",
+        description: "Homework Submission",
         URL: formData.get("URL")
     });
 
@@ -214,7 +213,6 @@ export async function updateSubmission(prevState: State, formData: FormData) {
         };
     }
 
-    console.log(validatedFields.data)
     const attachments = [validatedFields.data]
     const grade_points = 95.0
 
@@ -240,3 +238,8 @@ export async function updateSubmission(prevState: State, formData: FormData) {
     revalidatePath('/dashboard/assignments');
     redirect('/dashboard/assignments');
 }
+
+export async function login() {
+
+    redirect(`https://dev.clever.com/docs/oauth-implementation`);
+  }

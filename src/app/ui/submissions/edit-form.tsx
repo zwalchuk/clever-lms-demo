@@ -20,10 +20,15 @@ import { UpdateSubmission } from './buttons';
 
 export default function UpdateSubmissionForm({
     submission,
+    section,
+    id
 }: {
     submission: Submission;
+    section: string;
+    id: string;
 }) {
-  const initialState = { message: null, errors: {} };
+  const user_id = submission.data.user_id;
+  const initialState = { message: {user_id, section, id }, errors: {}, };
   const [state, dispatch] = useFormState(updateSubmission, initialState);
   return (
     <form action={dispatch}>

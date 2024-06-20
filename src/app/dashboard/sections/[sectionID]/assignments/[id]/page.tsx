@@ -6,14 +6,12 @@ import SubmissionsTable from "@/app/ui/submissions/submissions-list"
 
 
 
-export default async function Page({ params }: {params: {id:string}}) {
+export default async function Page({ params }: {params: {id:string; sectionID:string;}}) {
     const id = params.id;
-    const assignment = await fetchAssignmentById(id);
-    const section = await fetchSectionByAssignmentId(id);
+    const sectionID = params.sectionID;
 
     const fetcher = new CleverDataFetcher
-    const assignmentData = await fetcher.getAssignment(assignment.section_id, assignment.id)
-    const submissionData = await fetcher.getSubmissions(assignment.section_id, assignment.id)
+    const submissionData = await fetcher.getSubmissions(sectionID, id)
 
     return (
       <main>
@@ -25,7 +23,7 @@ export default async function Page({ params }: {params: {id:string}}) {
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
       <Suspense fallback={<MySectionsSkeleton />}>
-        <SubmissionsTable />
+        <SubmissionsTable submissionData = {submissionData} section_id = {sectionID} assignment_id = {id}/>
         </Suspense>
       </div>
     </main>

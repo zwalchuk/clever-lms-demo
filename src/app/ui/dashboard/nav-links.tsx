@@ -15,16 +15,7 @@ const links = [
   { name: 'Home', 
     href: '/dashboard', 
     icon: HomeIcon 
-  },
-  {
-    name: 'Assignments',
-    href: '/dashboard/assignments',
-    icon: DocumentDuplicateIcon,
-  },
-  { name: 'My Students', 
-    href: '/dashboard/students',
-    icon: UserGroupIcon 
-  },
+  }
 ];
 
 export default function NavLinks() {

@@ -24,7 +24,7 @@ export class CleverDataFetcher {
     return data;
   }
   async fetchStudents() {
-    const students = await this.fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8b/myStudents');
+    const students = await this.fetch('https://api.clever.com/v3.0/users/664d092e26cf6205b82a03a9/myStudents');
     return students.data.map((data) => new Student(data.data));
   }
 
@@ -35,7 +35,7 @@ export class CleverDataFetcher {
 
   async fetchSections() {
     noStore();
-    const section = await this.fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8b/sections');
+    const section = await this.fetch('https://api.clever.com/v3.0/users/664d092e26cf6205b82a03a9/sections');
     return section.data.map((data) => new Section(data.data));
   }
 
@@ -48,6 +48,10 @@ export class CleverDataFetcher {
   async getSubmissions(sectionId: string, assignmentId: string) {
     noStore();
     const submissions = await this.fetch(`https://api.clever.com/v3.1/sections/${sectionId}/assignments/${assignmentId}/submissions`)
+    for (const submission of submissions.data) {
+      const student = await this.fetch(`https://api.clever.com/v3.0/users/${submission.user_id}`);
+      submission.name = student.data.name.first + " " + student.data.name.last;
+    }
     return submissions;
   }
 
@@ -60,7 +64,7 @@ export class CleverDataFetcher {
 
 //needed to create a new fetchSections, fetchAssignments functions bc classes can't be imported to client side
 export async function fetchSections() {
-  const res = await fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8b/sections', {
+  const res = await fetch('https://api.clever.com/v3.0/users/664d092e26cf6205b82a03a9/sections', {
     headers: {
       'Authorization': 'Bearer ' + token,
       'Content-Type': 'application/json',
@@ -108,6 +112,7 @@ export async function fetchFilteredAssignments(
   try {
     const assignments = await sql<Assignment>`
     SELECT
+      assignments.title,
       assignments.id,
       assignments.section_id
     FROM assignments

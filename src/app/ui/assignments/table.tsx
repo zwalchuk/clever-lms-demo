@@ -26,12 +26,17 @@ export default async function AssignmentsTable({
                   <div>
                     <div className="mb-2 flex items-center">
                     <Link 
-                    href={`/dashboard/sections/${assignment.id}/assignments`}
+                    href={`/dashboard/sections/${assignment.section_id}/assignments/${assignment.id}`}
                     className="truncate sm:block">
-                      {assignment.id}
+                      {assignment.title}
                     </Link>
                     </div>
-                    <p className="text-sm text-gray-500">{assignment.section_id}</p>
+                    <p className="text-sm text-gray-500">
+                      {assignment.id}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {assignment.section_id}
+                    </p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
@@ -39,7 +44,7 @@ export default async function AssignmentsTable({
                     <p>{assignment.due_date}</p>
                   </div> */}
                   <div className="flex justify-end gap-2">
-                    <UpdateAssignment id={assignment.id} />
+                    <UpdateAssignment sectionID={assignment.section_id} id={assignment.id} />
                     <DeleteAssignment id={assignment.id} />
                   </div>
                 </div>
@@ -49,6 +54,9 @@ export default async function AssignmentsTable({
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
+              <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  Assignment Title
+                </th>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
                   Assignment ID
                 </th>
@@ -68,18 +76,21 @@ export default async function AssignmentsTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       <Link 
-                    href={`/dashboard/assignments/${assignment.id}`}
+                    href={`/dashboard/sections/${assignment.section_id}/assignments/${assignment.id}`}
                     className="truncate sm:block">
-                      {assignment.id}
+                      {assignment.title}
                     </Link>
                     </div>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {assignment.id}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {assignment.section_id}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateAssignment id={assignment.id} />
+                      <UpdateAssignment sectionID = {assignment.section_id} id={assignment.id} />
                       <DeleteAssignment id={assignment.id} />
                     </div>
                   </td>

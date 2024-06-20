@@ -6,16 +6,26 @@ import Link from 'next/link';
 import { inter } from '@/app/ui/fonts';
 import { CleverDataFetcher, fetchAssignmentById, fetchSectionByAssignmentId } from '@/app/lib/clever';
 
-export default async function SubmissionsTable({ params }: {params: {id:string}}) {
+
+export default async function SubmissionsTable(
+  {
+    submissionData,
+    section_id,
+    assignment_id
+  }: {
+    submissionData: string,
+    section_id: string,
+    assignment_id: string
+  }
+) {
     
-    /*const id = params.id;
-    const assignment = await fetchAssignmentById(id);
-    const section = await fetchSectionByAssignmentId(id); */
+    /*const assignment = await fetchAssignmentById(id);
+    console.log(assignment);
+    const section = await fetchSectionByAssignmentId(id);*/
     
     // hard-coded the section and assignment values for now
     const fetcher = new CleverDataFetcher();
-    const submission = await fetcher.getSubmissions('657b35c16a1a3e5c217dcd67', 'f7696d7a-d8f3-492f-ab99-64a3c300d12e');
-    const student = await fetcher.getStudent('657b35c16a1a3e5c217dcd30');
+
 
     return (
         <div className="flex w-full flex-col md:col-span-4">
@@ -24,10 +34,10 @@ export default async function SubmissionsTable({ params }: {params: {id:string}}
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
         {<div className="bg-white px-6">
-          {student?.data.map((student, i) => {
+          {submissionData.data.map((submission, i) => {
             return (
               <div
-                key={student.id}
+                key={submission.id}
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
@@ -38,12 +48,12 @@ export default async function SubmissionsTable({ params }: {params: {id:string}}
                 <div className="flex items-center">
                   <div className="min-w-0">
                     <Link 
-                    href={`/dashboard/submissions/${submission.id}/edit`}
+                    href={`/dashboard/sections/${section_id}/assignments/${assignment_id}/submissions/${submission.user_id}/edit`}
                     className="truncate text-lg text-gray-700 font-semibold sm:block">
-                      {student.name}
+                      {submission.name}
                     </Link>
                     <p className="text-sm text-gray-400 font-normal md:text-base">
-                      {student.user_id}
+                      {submission.user_id}
                     </p>
                   </div>
                 </div>

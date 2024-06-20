@@ -2,10 +2,10 @@ import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteAssignment } from '@/app/lib/actions';
 
-export function CreateAssignment() {
+export function CreateAssignment({ sectionID }: { sectionID: string }) {
   return (
     <Link
-      href="/dashboard/assignments/create"
+      href={`/dashboard/sections/${sectionID}/assignments/create`}
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
       <span className="hidden md:block">Create Assignment</span>{' '}
@@ -14,10 +14,10 @@ export function CreateAssignment() {
   );
 }
 
-export function UpdateSubmission() {
+export function UpdateSubmission({ sectionID, id }: { sectionID: string; id: string }) {
   return (
     <Link
-      href={`/dashboard/submissions/${id}/edit`}
+      href={`/dashboard/sections/${sectionID}/assignments/${id}/submissions/${user_id}/edit`}
       className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
       <span className="hidden md:block">Update Submission</span>{' '}
@@ -26,10 +26,10 @@ export function UpdateSubmission() {
   );
 }
 
-export function UpdateAssignment({ id }: { id: string }) {
+export function UpdateAssignment({ sectionID, id }: { sectionID: string; id: string }) {
   return (
     <Link
-      href={`/dashboard/assignments/${id}/edit`}
+      href={`/dashboard/sections/${sectionID}/assignments/${id}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />

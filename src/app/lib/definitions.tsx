@@ -62,19 +62,21 @@ export class Section {
 
 export class Assignment {
   id: string;
+  section_id: string;
   title: string;
   description: string;
   due_date: string;
   points_possible: Number;
-  //submission_types: Array<String>;
+  submission_types: Array<String>;
 
   constructor(data) {
     this.id = data.id;
+    this.section_id = data.section_id;
     this.title = data.title;
     this.description = data.description;
     this.due_date = data.due_date;
     this.points_possible = data.points_possible;
-    //this.submission_types = data.submission_types;
+    this.submission_types = data.submission_types;
   }
 };
 
@@ -114,6 +116,7 @@ export class Attachment {
 export type AssignmentSql = {
   id: string;
   section_id: string;
+  title: string;
 };
 
 export type SectionIdSql = {

@@ -8,16 +8,18 @@ import { Suspense } from 'react';
 import { fetchAssignmentsPages } from '@/app/lib/clever';
  
 export default async function Page({
-    searchParams,
+    searchParams, params
   }: {
     searchParams?: {
       query?: string;
       page?: string;
-    };
+    },
+    params: {sectionID: string};
   }) {
-    const query = searchParams?.query || '';
+    `const query = searchParams?.query || '';`
+    const query = params.sectionID || '';
     const currentPage = Number(searchParams?.page) || 1;
-    
+    const sectionID = params.sectionID;
     const totalPages = await fetchAssignmentsPages(query);
     
     return (
@@ -27,7 +29,7 @@ export default async function Page({
         </div>
         <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
           <Search placeholder="Search assignments..." />
-          <CreateAssignment />
+          <CreateAssignment sectionID={params.sectionID}/>
         </div>
         <Suspense key={query + currentPage} fallback={<AssignmentsTableSkeleton />}>
           <Table query={query} currentPage={currentPage} />
