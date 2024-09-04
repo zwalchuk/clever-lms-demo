@@ -52,9 +52,9 @@ export async function createAssignment(section_id: string, prevState: State, for
     // Validate form fields using Zod
     const validatedFields = CreateAssignment.safeParse({
         title: formData.get('title'),
-        description: formData.get('description'),
+        description: "First Assignment",
         dueDate: formData.get('dueDate'),
-        points_possible: formData.get('points_possible'),
+        points_possible: 100,
         submission_types: ['link']
     });
 
@@ -107,7 +107,7 @@ export async function createAssignment(section_id: string, prevState: State, for
         redirect('/dashboard/sections/' + section_id + '/assignments');
 }
 
-export async function updateAssignment(prevState: State, formData: FormData) {
+export async function updateAssignment(section_id: string, id: string, prevState: State, formData: FormData) {
 
     const validatedFields = UpdateAssignment.safeParse({
         title: formData.get('title'),
@@ -131,7 +131,7 @@ export async function updateAssignment(prevState: State, formData: FormData) {
     //const sectionId = fetchSectionByAssignmentId(Assignment.id)
     //console.log(sectionId)
 
-    const response = await fetch(`https://api.clever.com/v3.1/sections/${sectionId}/assignments/${id}`, {
+    const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${id}`, {
         method: 'PATCH',
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -214,6 +214,7 @@ export async function updateSubmission(prevState: State, formData: FormData, sec
 
     const attachments = [validatedFields.data]
     const grade_points = 95.0
+    console.log(attachments)
 
     const response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${assignmentId}/submissions/${userId}`, {
         method: 'PATCH',
@@ -222,8 +223,18 @@ export async function updateSubmission(prevState: State, formData: FormData, sec
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            attachments,
-            grade_points,
+            grade_points
+        })
+    });
+
+    const new_response = await fetch(`https://api.clever.com/v3.1/sections/${section_id}/assignments/${assignmentId}/submissions/${userId}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            attachments
         })
     });
     
@@ -234,8 +245,8 @@ export async function updateSubmission(prevState: State, formData: FormData, sec
     }
     else console.log ('Submission successfully updated.')
 
-    revalidatePath('/dashboard/assignments');
-    redirect('/dashboard/assignments');
+    revalidatePath(`/dashboard/sections/${section_id}/assignments`);
+    redirect(`/dashboard/sections/${section_id}/assignments`);
 }
 
 export async function login() {

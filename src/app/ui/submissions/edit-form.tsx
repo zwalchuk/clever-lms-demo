@@ -65,7 +65,7 @@ export default function UpdateSubmissionForm({
         {/* Link */}
         <div className="mb-4">
           <label htmlFor="title" className="mb-2 block text-sm font-medium">
-            Submission Link
+            Submit Your Favorite Math Website
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -73,7 +73,6 @@ export default function UpdateSubmissionForm({
                 id="URL"
                 name="URL"
                 type="link"
-                placeholder="https://schools.clever.com"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-400"
                 aria-describedby='URL-error'
               />

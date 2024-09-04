@@ -22,7 +22,7 @@ import {
 import { Button } from '@/app/ui/button';
 import { createAssignment } from '@/app/lib/actions';
 
-export default function Form({ section_id }: { section_id: String }) {
+export default function Form({ section_id }: { section_id: string }) {
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(createAssignment.bind(null, section_id), initialState);
 
@@ -33,20 +33,14 @@ export default function Form({ section_id }: { section_id: String }) {
         {/* Assignment Title */}
         <div className="mb-4">
           <label htmlFor="title" className="mb-2 block text-sm font-medium">
-            Assignment Title
+            Course Selection
           </label>
           <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="title"
-                name="title"
-                type="string"
-                placeholder="Week 1 Homework"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-400"
-                aria-describedby='title-error'
-              />
-              <BookOpenIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
+          <select id="title" name="title">
+              <option selected>Algebra 1</option>
+              <option>Algebra 2</option>
+              <option>Geometry</option>
+          </select>
             <div id="title-error" aria-live="polite" aria-atomic="true">
               {state.errors?.title &&
                 state.errors.title.map((error: string) => (
@@ -58,33 +52,6 @@ export default function Form({ section_id }: { section_id: String }) {
           </div>
         </div>
         
-        {/* Assignment Description */}
-        <div className="mb-4">
-          <label htmlFor="title" className="mb-2 block text-sm font-medium">
-            Assignment Description
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="description"
-                name="description"
-                type="string"
-                placeholder="Unit 1 Review"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-400"
-                aria-describedby='description-error'
-              />
-              <PencilSquareIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-            <div id="description-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.description &&
-                state.errors.description.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))}
-            </div>
-          </div>
-        </div>
 
         {/* Due Date */}
         <div className="mb-4">
@@ -105,34 +72,6 @@ export default function Form({ section_id }: { section_id: String }) {
             <div id="dueDate-error" aria-live="polite" aria-atomic="true">
               {state.errors?.dueDate &&
                 state.errors.dueDate.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Points Possible */}
-        <div className="mb-4">
-          <label htmlFor="title" className="mb-2 block text-sm font-medium">
-            Points Possible
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="points_possible"
-                name="points_possible"
-                type="string"
-                placeholder="100"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-400"
-                aria-describedby='points_possible-error'
-              />
-              <ClipboardDocumentCheckIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-            <div id="points_possible-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.points_possible &&
-                state.errors.points_possible.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>

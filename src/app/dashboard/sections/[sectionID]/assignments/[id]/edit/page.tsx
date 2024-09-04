@@ -23,7 +23,7 @@ export default async function Page({ params }: {params: {id:string} }) {
               },
             ]}
           />
-          <Form assignment={assignment} />
+          <Form section_id={section.section_id} id={id}/>
         </main>
       );
 }

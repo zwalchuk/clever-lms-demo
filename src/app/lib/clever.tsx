@@ -24,7 +24,7 @@ export class CleverDataFetcher {
     return data;
   }
   async fetchStudents() {
-    const students = await this.fetch('https://api.clever.com/v3.0/users/664d092e26cf6205b82a03a9/myStudents');
+    const students = await this.fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8f/myStudents');
     return students.data.map((data) => new Student(data.data));
   }
 
@@ -35,7 +35,7 @@ export class CleverDataFetcher {
 
   async fetchSections() {
     noStore();
-    const section = await this.fetch('https://api.clever.com/v3.0/users/664d092e26cf6205b82a03a9/sections');
+    const section = await this.fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8f/sections');
     return section.data.map((data) => new Section(data.data));
   }
 
@@ -64,7 +64,7 @@ export class CleverDataFetcher {
 
 //needed to create a new fetchSections, fetchAssignments functions bc classes can't be imported to client side
 export async function fetchSections() {
-  const res = await fetch('https://api.clever.com/v3.0/users/664d092e26cf6205b82a03a9/sections', {
+  const res = await fetch('https://api.clever.com/v3.0/users/657b35c16a1a3e5c217dcd8f/sections', {
     headers: {
       'Authorization': 'Bearer ' + token,
       'Content-Type': 'application/json',

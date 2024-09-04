@@ -21,12 +21,14 @@ import { createAssignment, updateAssignment } from '@/app/lib/actions';
 import { UpdateAssignment } from './buttons';
 
 export default function EditAssignmentForm({
-    assignment,
+    section_id,
+    id
 }: {
-    assignment: AssignmentSql;
+    section_id: string,
+    id: string
 }) {
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(updateAssignment, initialState);
+  const [state, dispatch] = useFormState(updateAssignment.bind(null, section_id, id), initialState);
   return (
     <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">

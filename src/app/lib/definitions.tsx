@@ -91,7 +91,7 @@ export class Submission {
   constructor(data) {
     this.id = data.id;
     this.assignment_id = data.assignment_id;
-    this.state = data.stata;
+    this.state = data.state;
     this.attachments = data.attachments;
     this.grader_id = data.grader_id;
     this.user_id = data.user_id
